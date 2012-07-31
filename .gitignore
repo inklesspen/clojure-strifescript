@@ -1,0 +1,11 @@
+.m2
+.lein
+pom.xml
+*jar
+/lib/
+/classes/
+.lein-deps-sum
+.cake
+*~
+/target/
+/temp/
