@@ -252,6 +252,7 @@
         scripts-by-team (zipmap (map :team-id all-scripts) all-scripts)]
     (layout
      [:div.page-header [:h1 "Still awaiting actions for some teams for " (models/exchange-name exchange)]]
+     (breadcrumbs ["Dashboard" (url-for page-dashboard)] [(str "Conflict: " (h (:name conflict))) (url-for page-conflict {:id (:id conflict)})] (models/exchange-name exchange))
      (row (span6
            [:table.table.table-condensed
             [:thead [:tr [:th "Team Name"]]]
