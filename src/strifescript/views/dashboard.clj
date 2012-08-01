@@ -289,9 +289,11 @@
                     )
                   ]))]]))
      (row (span6
-           (let [advance-allowed (and (< reveal-level 3) (= reveal-level (:actions-revealed (scripts-by-team (:id my-team)))))]
+           (let [my-team-revealed (:actions-revealed (scripts-by-team (:id my-team)))
+                 advance-allowed (and (< reveal-level 3) (= reveal-level my-team-revealed))]
              (form-to {:class "form-horizontal" :id "conflict-form"} [:post (str "/conflicts/" (:id conflict) "/exchange/" (:id exchange) "/advance")]
-                      [(element-keyword "button" (if-conj (not advance-allowed) ["btn" "btn-large" "btn-primary"] "disabled")) (if advance-allowed "Advance" "Already Advanced")]))
+                      [:input {"name" "reveal" "type" "hidden" "value" (inc my-team-revealed)}]
+                      [(element-keyword "button" (if-conj (not advance-allowed) ["btn" "btn-large" "btn-primary"] "disabled")) (if (not advance-allowed) {"disabled" "disabled"} {}) (if advance-allowed "Advance" "Already Advanced")]))
            ))
      )))
 
@@ -318,8 +320,9 @@
     )
   )
 
-(defpage [:post "/conflicts/:conflict-id/exchange/:exchange-id/advance" :conflict-id id-pattern :exchange-id id-pattern] {:keys [conflict-id exchange-id]}
-  (let [conflict-id (Integer/parseInt conflict-id)
+(defpage [:post "/conflicts/:conflict-id/exchange/:exchange-id/advance" :conflict-id id-pattern :exchange-id id-pattern] {:keys [conflict-id exchange-id reveal]}
+  (let [reveal-level (Integer/parseInt reveal)
+        conflict-id (Integer/parseInt conflict-id)
         exchange-id (Integer/parseInt exchange-id)
         user (current-user)
         exchange (models/get-exchange user conflict-id exchange-id)]
@@ -331,9 +334,9 @@
         (if (nil? script)
           (redirect (url-for page-conflict {:id conflict-id}))
           (do
-            (models/advance-script (:id exchange) (:id team))
-            (redirect (str "/conflicts/" (:id conflict) "/exchange/" (:id exchange)))
-            ))))))
+            (if (<= reveal-level 3)
+              (models/advance-script (:id exchange) (:id team) reveal-level))
+            (redirect (str "/conflicts/" (:id conflict) "/exchange/" (:id exchange)))))))))
 
 (defpage page-set-exchange-script [:get "/conflicts/:conflict-id/exchange/:exchange-id/script" :conflict-id id-pattern :exchange-id id-pattern] {:keys [conflict-id exchange-id]}
   (let [conflict-id (Integer/parseInt conflict-id)

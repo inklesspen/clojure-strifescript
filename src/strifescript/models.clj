@@ -82,8 +82,8 @@
                     :actions (array-support/make-sql-array "text" actions)
                     :actions_revealed 0}))))
 
-(defn advance-script [exchange-id team-id]
-  (update entities/scripts (set-fields {:actions_revealed (raw "(actions_revealed + 1)")}) (where {:exchange_id exchange-id :team_id team-id})))
+(defn advance-script [exchange-id team-id reveal-level]
+  (update entities/scripts (set-fields {:actions_revealed reveal-level}) (where {:exchange_id exchange-id :team_id team-id})))
 
 (defn all-scripts-entered? [exchange]
   ;; this is pretty ridiculous
