@@ -5,7 +5,14 @@
             [noir.session :as session])
   (:use [noir.core :only [defpartial]]
         [hiccup.page :only [include-css include-js html5]]
-        [hiccup.element :only [link-to]]))
+        [hiccup.element :only [link-to mail-to]]))
+
+(defpartial row [& content] [:div.row-fluid content])
+(defpartial span12 [& content] [:div.span12 content])
+(defpartial span6 [& content] [:div.span6 content])
+(defpartial spanoffset6 [& content] (list (span6) (span6 content)))
+(defpartial span3 [& content] [:div.span3 content])
+(defpartial row12 [& content] (row (span12 content)))
 
 (defpartial layout [& content]
             (html5
@@ -18,14 +25,8 @@
                (include-js "/js/strifescript.js")]
               [:body
                [:div.container-fluid
-                content]]))
-
-(defpartial row [& content] [:div.row-fluid content])
-(defpartial span12 [& content] [:div.span12 content])
-(defpartial span6 [& content] [:div.span6 content])
-(defpartial spanoffset6 [& content] (list (span6) (span6 content)))
-(defpartial span3 [& content] [:div.span3 content])
-(defpartial row12 [& content] (row (span12 content)))
+                content
+                (row12 (mail-to "jon@inklesspen.com" "Contact Maintainer"))]]))
 
 (defn current-user []
   (when-let [session-username (session/get :username)]
