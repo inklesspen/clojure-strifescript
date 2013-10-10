@@ -1,6 +1,13 @@
 # strifescript
 
-A website written in noir. 
+This is a webapp designed to handle Mouse Guard's conflict resolution
+scheme. It has an unusual system for a RPG; players have to choose
+three successive actions, lock them in, and then reveal them one at a
+time. Simple at the table, yet hard online.
+
+This was my first attempt at writing a solution, during the summer of
+2012. It's not maintained or developed anymore, but you can use it if
+you like.
 
 ## Usage
 
